@@ -102,3 +102,31 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [gh-discussions]: https://github.com/vmware/packer-examples-for-vsphere/discussions
 [packer]: https://www.packer.io
 [packer-plugin-vsphere]: https://developer.hashicorp.com/packer/integrations/vmware/vsphere
+
+## Build credentials
+
+`config/` is git-ignored in full, so nothing under it — including
+`config/.sshkeys/` — is committed. After cloning you must recreate it locally.
+
+**SSH keys** the builds inject into guests:
+
+```bash
+mkdir -p config/.sshkeys
+ssh-keygen -t ecdsa -b 521 -N '' -C 'packer-build' -f config/.sshkeys/id_ecdsa
+ssh-keygen -t rsa   -b 4096 -N '' -C 'packer-build' -f config/.sshkeys/id_rsa
+```
+
+The private keys were removed from this working tree in a secrets sweep; only
+the `.pub` halves remained, and those are ignored too. If your existing builds
+rely on a specific key, restore it from your password manager rather than
+regenerating, or the templates you already published will no longer accept it.
+
+**Build passwords** come from Packer variables (`var.build_password` and
+friends), sourced from `config/*.pkrvars.hcl` or the environment:
+
+```bash
+export PKR_VAR_build_password='...'
+export PKR_VAR_vsphere_password='...'
+```
+
+Never inline them in `builds/**/*.pkr.hcl` — those files are committed.

@@ -79,3 +79,18 @@ venv/
 # MkDocs documentation
 ## Ignore site directory.
 .site/
+
+# ─── Credential material ──────────────────────────────────────────────────
+# Private keys and secret-bearing var files. Public halves (*.pub) and
+# certificates (*-cert.pem, *.crt) stay tracked.
+*.key
+*.p8
+*.p12
+*.pfx
+*-key.pem
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+.env
+!*.pub
